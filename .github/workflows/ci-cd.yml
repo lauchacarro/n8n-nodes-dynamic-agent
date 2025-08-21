@@ -69,7 +69,7 @@ jobs:
         id: version-check
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          NPM_VERSION=$(npm view n8n-nodes-memory-state version 2>/dev/null || echo "0.0.0")
+          NPM_VERSION=$(npm view n8n-nodes-dynamic-agent version 2>/dev/null || echo "0.0.0")
           echo "Package version: $PACKAGE_VERSION"
           echo "NPM version: $NPM_VERSION"
           if [ "$PACKAGE_VERSION" != "$NPM_VERSION" ]; then
@@ -117,7 +117,7 @@ jobs:
 
             ### Installation
             ```bash
-            npm install n8n-nodes-memory-state
+            npm install n8n-nodes-dynamic-agent
             ```
 
             See the [README](https://github.com/${{ github.repository }}/blob/main/README.md) for full documentation.
