@@ -1,0 +1,69 @@
+{
+  "name": "n8n-nodes-dynamic-agent",
+  "version": "1.0.0",
+  "description": "Dynamic AI Agent node for N8N with flexible message configuration and enhanced functionality",
+  "keywords": [
+    "n8n-community-node-package",
+    "ai",
+    "agent",
+    "dynamic",
+    "langchain",
+    "llm",
+    "dynamic-messages",
+    "multi-role",
+    "json5"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/lauchacarro/n8n-nodes-dynamic-agent#readme",
+  "author": {
+    "name": "Lautaro Carro",
+    "email": "lautaroecarro@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lauchacarro/n8n-nodes-dynamic-agent.git"
+  },
+  "engines": {
+    "node": ">=20.15"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "npx rimraf dist && tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "format": "prettier nodes --write",
+    "lint": "eslint nodes package.json",
+    "lintfix": "eslint nodes package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes package.json",
+    "package": "npm run build && npm pack",
+    "test-install": "npm run package && npm install -g n8n-nodes-dynamic-agent-*.tgz"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [],
+    "nodes": [
+      "dist/nodes/DynamicAgent/DynamicAgent.node.js"
+    ]
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.0",
+    "json5": "^2.2.3",
+    "langchain": "^0.3.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.13",
+    "@typescript-eslint/parser": "~8.32.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.3",
+    "gulp": "^5.0.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
