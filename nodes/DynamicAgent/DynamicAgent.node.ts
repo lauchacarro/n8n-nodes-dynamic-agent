@@ -16,7 +16,7 @@ export class DynamicAgent implements INodeType {
 		icon: 'fa:robot',
 		iconColor: 'black',
 		group: ['transform'],
-		version: [1.0, 1.1],
+		version: 1,
 		description: 'Dynamic AI Agent with flexible message configuration, multi-role support and JSON5 compatibility',
 		defaults: {
 			name: 'Dynamic AI Agent',
