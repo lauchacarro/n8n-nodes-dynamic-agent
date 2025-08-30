@@ -30,8 +30,6 @@ export async function executeWithLanguageModelAndTools(
 ): Promise<string> {
 	// Case 1: No tools connected - Simple chat mode
 	if (!tools || tools.length === 0) {
-		console.log('🤖 Running in simple chat mode (no tools)');
-
 		// Use the same pattern as ai-connections.ts for simple execution
 		const promptContent = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
 		const result = await languageModel.invoke(promptContent);
@@ -40,8 +38,6 @@ export async function executeWithLanguageModelAndTools(
 	}
 
 	// Case 2: Tools connected - Agent mode with tool calling
-	console.log(`🛠️ Running in agent mode with ${tools.length} tool(s): ${tools.map(t => t.name).join(', ')}`);
-
 	try {
 		// Create prompt template using the LangChain pattern
 		const promptMessages = messages.map(msg => {
@@ -93,11 +89,7 @@ export async function executeWithLanguageModelAndTools(
 		return result.output || 'No response generated';
 
 	} catch (error) {
-		console.error('Error in agent execution:', error);
-
 		// Fallback to simple mode if agent fails
-		console.log('🔄 Falling back to simple chat mode due to error');
-
 		const promptContent = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
 		const result = await languageModel.invoke(promptContent);
 
@@ -118,7 +110,6 @@ export function validateModelForTools(
 
 	// Check if model supports tool calling
 	if (!('bindTools' in languageModel) || typeof languageModel.bindTools !== 'function') {
-		console.warn('⚠️ Connected language model does not support tool calling');
 		return false;
 	}
 

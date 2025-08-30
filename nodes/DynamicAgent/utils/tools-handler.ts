@@ -32,7 +32,6 @@ export async function getConnectedAgentTools(
 	} catch (error) {
 		// If no tools are connected or there's an error, return empty array
 		// This allows the agent to work without tools (0 tools case)
-		console.log('No tools connected or error getting tools:', error.message);
 		return [];
 	}
 }

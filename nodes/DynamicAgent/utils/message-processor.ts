@@ -1,4 +1,4 @@
-import JSON5 from 'json5';
+import * as YAML from 'yaml';
 
 interface DynamicMessage {
 	role: 'system' | 'user' | 'assistant';
@@ -35,14 +35,15 @@ export async function processDynamicMessages(messages: DynamicMessage[]): Promis
 }
 
 /**
- * Processes JSON array of messages
+ * Processes YAML array of messages with robust parsing and validation
  */
-export async function processJsonMessages(jsonString: string): Promise<ProcessedMessage[]> {
+export async function processYamlMessages(yamlString: string): Promise<ProcessedMessage[]> {
 	try {
-		const messages = JSON5.parse(jsonString);
+		// Parse YAML - much more robust than JSON for multiline content
+		const messages = YAML.parse(yamlString);
 
 		if (!Array.isArray(messages)) {
-			throw new Error('JSON must be an array of messages');
+			throw new Error('YAML must be an array of messages');
 		}
 
 		// Validate and process each message
@@ -50,6 +51,10 @@ export async function processJsonMessages(jsonString: string): Promise<Processed
 
 		for (let i = 0; i < messages.length; i++) {
 			const msg = messages[i];
+
+			if (!msg || typeof msg !== 'object') {
+				throw new Error(`Message at index ${i} must be an object`);
+			}
 
 			if (!msg.role || !msg.content) {
 				throw new Error(`Message at index ${i} must have 'role' and 'content' properties`);
@@ -74,8 +79,9 @@ export async function processJsonMessages(jsonString: string): Promise<Processed
 		}
 
 		return processedMessages;
+
 	} catch (error) {
-		throw new Error(`Invalid JSON messages: ${error.message}`);
+		throw new Error(`Invalid YAML messages: ${error.message}`);
 	}
 }
 
@@ -112,25 +118,30 @@ export function validateDynamicMessages(messages: DynamicMessage[]): string[] {
 }
 
 /**
- * Validates JSON messages string
+ * Validates YAML messages string
  */
-export function validateJsonMessages(jsonString: string): string[] {
+export function validateYamlMessages(yamlString: string): string[] {
 	const errors: string[] = [];
 
-	if (!jsonString || typeof jsonString !== 'string') {
-		errors.push('JSON messages must be a valid string');
+	if (!yamlString || typeof yamlString !== 'string') {
+		errors.push('YAML messages must be a valid string');
 		return errors;
 	}
 
 	try {
-		const messages = JSON5.parse(jsonString);
+		const messages = YAML.parse(yamlString);
 
 		if (!Array.isArray(messages)) {
-			errors.push('JSON must be an array of messages');
+			errors.push('YAML must be an array of messages');
 			return errors;
 		}
 
 		messages.forEach((message, index) => {
+			if (!message || typeof message !== 'object') {
+				errors.push(`Message at index ${index} must be an object`);
+				return;
+			}
+
 			if (!message.role || !['system', 'user', 'assistant'].includes(message.role)) {
 				errors.push(`Message at index ${index} must have a valid role (system, user, or assistant)`);
 			}
@@ -147,8 +158,8 @@ export function validateJsonMessages(jsonString: string): string[] {
 				errors.push(`Message at index ${index} content is too long (max 10,000 characters)`);
 			}
 		});
-	} catch (parseError) {
-		errors.push(`Invalid JSON format: ${parseError.message}`);
+	} catch (parseError: any) {
+		errors.push(`Invalid YAML format: ${parseError.message}`);
 	}
 
 	return errors;

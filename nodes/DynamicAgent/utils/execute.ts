@@ -4,11 +4,11 @@ import type {
 } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
-import { processDynamicMessages, processJsonMessages } from './message-processor';
+import { processDynamicMessages, processYamlMessages } from './message-processor';
 import {
 	getConnectedLanguageModel,
 } from './ai-connections';
-import { getConnectedAgentTools, getToolsSummary } from './tools-handler';
+import { getConnectedAgentTools } from './tools-handler';
 import { executeWithLanguageModelAndTools } from './ai-tools-execution';/**
  * Main execution function for the Dynamic Agent
  */
@@ -33,9 +33,9 @@ export async function dynamicAgentExecute(
 
 				processedMessages = await processDynamicMessages(dynamicMessages.messages);
 			} else {
-				// Handle JSON array messages
-				const messagesJson = this.getNodeParameter('messagesJson', itemIndex, '[]') as string;
-				processedMessages = await processJsonMessages(messagesJson);
+				// Handle YAML array messages
+				const messagesYaml = this.getNodeParameter('messagesJson', itemIndex, '[]') as string;
+				processedMessages = await processYamlMessages(messagesYaml);
 			}
 
 
@@ -59,7 +59,6 @@ export async function dynamicAgentExecute(
 
 			// Get connected tools (may be empty array)
 			const connectedTools = await getConnectedAgentTools(this);
-			console.log(getToolsSummary(connectedTools));
 
 			// Execute with AI model - with or without tools support
 			// Get tool execution options

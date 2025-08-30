@@ -17,7 +17,7 @@ export class DynamicAgent implements INodeType {
 		iconColor: 'black',
 		group: ['transform'],
 		version: 1,
-		description: 'Dynamic AI Agent with flexible message configuration, multi-role support and JSON5 compatibility',
+		description: 'Dynamic AI Agent with flexible message configuration, multi-role support and YAML compatibility',
 		defaults: {
 			name: 'Dynamic AI Agent',
 
@@ -26,7 +26,7 @@ export class DynamicAgent implements INodeType {
 		outputs: [NodeConnectionType.Main],
 		properties: [
 			{
-				displayName: 'Welcome to Dynamic AI Agent! This node provides enhanced flexibility with multi-role messages, JSON5 support, and seamless tool integration.',
+				displayName: 'Welcome to Dynamic AI Agent! This node provides enhanced flexibility with multi-role messages, YAML support, and seamless tool integration.',
 				name: 'welcomeNotice',
 				type: 'notice',
 				default: '',
@@ -43,9 +43,9 @@ export class DynamicAgent implements INodeType {
 						description: 'Configure messages one by one with full control over roles',
 					},
 					{
-						name: 'JSON Array',
+						name: 'YAML Array',
 						value: 'json',
-						description: 'Provide a complete JSON array of messages (supports trailing commas)',
+						description: 'Provide a complete YAML array of messages (supports multiline, quotes, and special characters)',
 					},
 				],
 				description: 'Choose how you want to configure the messages',
@@ -120,14 +120,15 @@ export class DynamicAgent implements INodeType {
 				description: 'Configure individual messages with specific roles',
 			},
 			{
-				displayName: 'Messages JSON Array',
+				displayName: 'Messages YAML Array',
 				name: 'messagesJson',
 				type: 'string',
-				default: JSON.stringify([
-					{ role: 'system', content: 'You are a helpful AI assistant.' },
-					{ role: 'user', content: 'Hello!' },
-					{ role: 'assistant', content: 'Hello! How can I help you today?' },
-				], null, 2),
+				default: `- role: system
+  content: "You are a helpful AI assistant."
+- role: user
+  content: "Hello!"
+- role: assistant
+  content: "Hello! How can I help you today?"`,
 				typeOptions: {
 					rows: 10,
 				},
@@ -136,12 +137,21 @@ export class DynamicAgent implements INodeType {
 						messageMode: ['json'],
 					},
 				},
-				placeholder: JSON.stringify([
-					{ role: 'system', content: 'System message' },
-					{ role: 'user', content: 'User message' },
-					{ role: 'assistant', content: 'Assistant message' },
-				], null, 2),
-				description: 'Enter a JSON array of messages. Each message should have "role" and "content" properties.',
+				placeholder: `- role: system
+  content: |
+    System message with multiline support.
+
+    You can use:
+    - "Quotes" and 'apostrophes'
+    - \`Backticks\` and code blocks
+    - Any special characters!
+
+- role: user
+  content: "User message"
+
+- role: assistant
+  content: "Assistant response"`,
+				description: 'Enter a YAML array of messages. Each message should have "role" and "content" properties. YAML supports multiline text, quotes, and special characters without escaping.',
 			},
 			{
 				displayName: 'Options',
